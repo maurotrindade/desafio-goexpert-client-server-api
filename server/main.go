@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	config "server/configs"
+)
 
 func main() {
-	fmt.Print("Hello from client")
+	log.Print(*config.GetPort())
 }

@@ -7,4 +7,5 @@ RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o server .
 FROM scratch
 WORKDIR /app
 COPY --from=builder /app/server .
+COPY --from=builder /app/.env .
 CMD ["./server"]

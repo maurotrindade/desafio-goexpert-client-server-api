@@ -21,6 +21,7 @@
 go.work
 go.work.sum
 
-# 
 client/client
 server/server
+client/.env
+server/.env
