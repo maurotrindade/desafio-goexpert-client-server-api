@@ -11,10 +11,16 @@ import (
 	"time"
 )
 
+var port = ":" + *config.GetPort()
+
 func main() {
-	log.Print(*config.GetQuotationAddress())
 	res, _ := getQuotation()
 	log.Print(res)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello from client."))
+	})
+	http.ListenAndServe(port, nil)
 }
 
 type QuotationRes struct {
@@ -43,7 +49,7 @@ func getQuotation() (*QuotationRes, error) {
 		return nil, err
 	}
 
-	// TODO: verificar problema com TLS no container
+	// TODO: verificar problema com TLS no container (pode ser versão do Go)
 	if *config.GetEnv() == "DEV" {
 		cfg := &tls.Config{
 			InsecureSkipVerify: true,
