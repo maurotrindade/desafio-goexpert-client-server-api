@@ -12,7 +12,7 @@ import (
 
 func main() {
 	log.Print(*config.GetQuotationAddress())
-	res, _ := getQuatation()
+	res, _ := getQuotation()
 	log.Print(res)
 
 	// log.Print(quotation.USDBRL.Bid)
@@ -34,7 +34,7 @@ type QuotationRes struct {
 	} `json:"USDBRL"`
 }
 
-func getQuatation() (*QuotationRes, error) {
+func getQuotation() (*QuotationRes, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
 	defer cancel()
 
