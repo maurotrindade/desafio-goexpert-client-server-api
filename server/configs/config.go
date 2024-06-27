@@ -5,6 +5,7 @@ import (
 )
 
 type config struct {
+	ENV  string
 	PORT string // `mapstructure:"PORT"`
 
 	DB_DRIVER string
@@ -13,12 +14,18 @@ type config struct {
 	DB_USER   string
 	DB_PSW    string
 	DB_NAME   string
+
+	USD_BRL_API_ADDRESS string
 }
 
 var cfg *config
 
 func GetPort() *string {
 	return &cfg.PORT
+}
+
+func GetEnv() *string {
+	return &cfg.ENV
 }
 
 func GetDbDriver() *string {
@@ -43,6 +50,10 @@ func GetDbPsw() *string {
 
 func GetDbName() *string {
 	return &cfg.DB_NAME
+}
+
+func GetQuotationAddress() *string {
+	return &cfg.USD_BRL_API_ADDRESS
 }
 
 func init() {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"io"
 	"log"
@@ -14,8 +15,6 @@ func main() {
 	log.Print(*config.GetQuotationAddress())
 	res, _ := getQuotation()
 	log.Print(res)
-
-	// log.Print(quotation.USDBRL.Bid)
 }
 
 type QuotationRes struct {
@@ -42,6 +41,16 @@ func getQuotation() (*QuotationRes, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", *config.GetQuotationAddress(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	// TODO: verificar problema com TLS no container
+	if *config.GetEnv() == "DEV" {
+		cfg := &tls.Config{
+			InsecureSkipVerify: true,
+		}
+		http.DefaultClient.Transport = &http.Transport{
+			TLSClientConfig: cfg,
+		}
 	}
 
 	res, err := http.DefaultClient.Do(req)
