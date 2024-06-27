@@ -3,8 +3,12 @@ package main
 import (
 	config "client/configs"
 	"log"
+	"time"
 )
 
 func main() {
-	log.Print(*config.GetPort())
+	for {
+		time.Sleep(10 * time.Second)
+		log.Print(*config.GetPort())
+	}
 }
