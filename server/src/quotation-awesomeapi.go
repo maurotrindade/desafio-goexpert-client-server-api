@@ -28,7 +28,7 @@ type QuotationRes struct {
 }
 
 func GetQuotation() (*QuotationRes, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 2000*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
 	defer cancel()
 
 	log.Printf("Iniciando chamada no endereço: %s", *config.GetQuotationAddress())
