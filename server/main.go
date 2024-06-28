@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	config "server/configs"
@@ -10,27 +11,23 @@ import (
 var port = ":" + *config.GetPort()
 
 func main() {
-	res, _ := src.GetQuotation()
-	log.Print(res)
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello from client."))
+	http.HandleFunc("/cotacao", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(callApi())
 	})
 	http.ListenAndServe(port, nil)
 }
 
-type QuotationRes struct {
-	USDBRL struct {
-		Code       string `json:"code"`
-		Codein     string `json:"codein"`
-		Name       string `json:"name"`
-		High       string `json:"high"`
-		Low        string `json:"low"`
-		VarBid     string `json:"varBid"`
-		PctChange  string `json:"pctChange"`
-		Bid        string `json:"bid"`
-		Ask        string `json:"ask"`
-		Timestamp  string `json:"timestamp"`
-		CreateDate string `json:"create_date"`
-	} `json:"USDBRL"`
+func callApi() []byte {
+	res, err := src.GetQuotation()
+	if err != nil {
+		log.Fatal("Chamada falhou, tente novamente")
+	}
+
+	q := &src.Quotation{Bid: res.USDBRL.Bid}
+	txt, err := json.Marshal(q)
+	if err != nil {
+		log.Fatal("Deu ruim na Patrulha Canina")
+	}
+
+	return txt
 }
