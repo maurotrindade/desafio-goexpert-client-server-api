@@ -9,3 +9,4 @@ WORKDIR /app
 COPY --from=builder /app/client .
 COPY --from=builder /app/.env .
 CMD ["./client"]
+# CMD ["tail", "-f", "/dev/null"]
