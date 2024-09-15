@@ -1,7 +1,7 @@
-FROM golang:latest as builder
+FROM golang:latest AS builder
 WORKDIR /app
 COPY . .
-RUN go build -ldflags="-w -s" -o server .
+RUN GOOS=linux go build -ldflags="-w -s" -o server .
 
 
 FROM scratch

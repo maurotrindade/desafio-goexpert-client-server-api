@@ -2,40 +2,62 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	config "server/configs"
 	"server/infra/db"
 	"server/src"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 var port = ":" + *config.GetPort()
 
+var (
+	ErrCallingExternalApi = errors.New("chamada falhou, tente novamente")
+	ErrUnmarshal          = errors.New("erro durante decodificação do JSON")
+)
+
 func main() {
-	http.HandleFunc("/cotacao", quotationHandler)
+	router := chi.NewRouter()
+	router.Use(middleware.Logger)
+	router.Get("/cotacao", quotationHandler)
+
 	db.CreateDB()
-	db.InsertQuotation(&src.Quotation{Bid: "21.4"})
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(port, router)
 }
 
 func quotationHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	w.Write(callApi())
+
+	json, err := callExternalApi()
+	if err != nil {
+		log.Fatal(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(json)
 }
 
-func callApi() []byte {
+func callExternalApi() ([]byte, error) {
 	res, err := src.GetQuotation()
 	if err != nil {
-		log.Fatal("Chamada falhou, tente novamente")
+		return nil, ErrCallingExternalApi
 	}
 
 	q := &src.Quotation{Bid: res.USDBRL.Bid}
+	db.InsertQuotation(&src.Quotation{Bid: q.Bid})
+
 	txt, err := json.Marshal(q)
 	if err != nil {
-		log.Fatal("Deu ruim na Patrulha Canina")
+		return nil, ErrUnmarshal
 	}
 
-	return txt
+	return txt, nil
 }

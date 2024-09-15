@@ -5,13 +5,18 @@ import (
 )
 
 type config struct {
-	PORT string // `mapstructure:"PORT"`
+	PORT           string // `mapstructure:"PORT"`
+	SERVER_ADDRESS string // `mapstructure:SERVER_ADDRESS`
 }
 
 var cfg *config
 
 func GetPort() *string {
 	return &cfg.PORT
+}
+
+func GetServerAddress() *string {
+	return &cfg.SERVER_ADDRESS
 }
 
 func init() {

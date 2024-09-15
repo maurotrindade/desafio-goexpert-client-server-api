@@ -1,7 +1,7 @@
 package main
 
 import (
-	config "client/configs"
+	"client/src"
 	"log"
 	"time"
 )
@@ -9,6 +9,6 @@ import (
 func main() {
 	for {
 		time.Sleep(10 * time.Second)
-		log.Print(*config.GetPort())
+		log.Print(src.GetBid())
 	}
 }
