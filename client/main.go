@@ -9,6 +9,11 @@ import (
 func main() {
 	for {
 		time.Sleep(10 * time.Second)
-		log.Print(src.GetBid())
+
+		err, bid := src.GetBid()
+		if err != nil {
+			log.Print(err)
+		}
+		log.Print(bid)
 	}
 }
