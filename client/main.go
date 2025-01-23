@@ -10,10 +10,12 @@ func main() {
 	for {
 		time.Sleep(10 * time.Second)
 
-		err, bid := src.GetBid()
+		bid, err := src.GetBid()
 		if err != nil {
 			log.Print(err)
 		}
-		log.Print(bid)
+		if bid.Bid != "" {
+			src.CreateFile(bid.Bid)
+		}
 	}
 }

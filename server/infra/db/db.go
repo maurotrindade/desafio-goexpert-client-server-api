@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"os"
@@ -40,6 +41,9 @@ func CreateDB() {
 }
 
 func InsertQuotation(quotation *src.Quotation) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
+
 	db, err := sql.Open("sqlite3", "./sqlite-database.db")
 	if err != nil {
 		return err
@@ -48,7 +52,7 @@ func InsertQuotation(quotation *src.Quotation) error {
 
 	insertQuotation := `insert into quotation (bid, create_at) values(?, ?)`
 
-	statement, err := db.Prepare(insertQuotation)
+	statement, err := db.PrepareContext(ctx, insertQuotation)
 	if err != nil {
 		return err
 	}

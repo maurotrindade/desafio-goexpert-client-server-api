@@ -52,7 +52,11 @@ func callExternalApi() ([]byte, error) {
 	}
 
 	q := &src.Quotation{Bid: res.USDBRL.Bid}
-	db.InsertQuotation(&src.Quotation{Bid: q.Bid})
+
+	err = db.InsertQuotation(&src.Quotation{Bid: q.Bid})
+	if err != nil {
+		return nil, ErrCallingExternalApi
+	}
 
 	txt, err := json.Marshal(q)
 	if err != nil {

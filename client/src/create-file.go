@@ -7,14 +7,14 @@ import (
 
 const fileName = "cotacao.txt"
 
-func CreateFile() {
+func CreateFile(value string) {
 	f, e := os.Create(fileName)
 	if e != nil {
 		panic(e)
 	}
 	defer f.Close()
 
-	txt := "Lorem ipsum dolor sit amet"
+	txt := "Dólar: " + value
 	size, e := f.WriteString(txt)
 	if e != nil {
 		panic(e)
