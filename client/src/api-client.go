@@ -4,6 +4,7 @@ import (
 	config "client/configs"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -14,8 +15,11 @@ type Quotation struct {
 	Bid string `json:"bid"`
 }
 
+var errTimeout = errors.New("tempo de resposta da API excedido")
+var errGeneric = errors.New("tente novamente mais tarde")
+
 func GetBid() (*Quotation, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+	ctx, cancel := context.WithTimeoutCause(context.Background(), 3000*time.Millisecond, errTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "GET", *config.GetServerAddress(), nil)
@@ -26,8 +30,7 @@ func GetBid() (*Quotation, error) {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Printf("erro ao fazer a chamada ao servidor: %v", err)
-		return nil, err
+		return nil, errGeneric
 	}
 	defer res.Body.Close()
 

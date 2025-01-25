@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -27,11 +28,13 @@ type QuotationRes struct {
 	} `json:"USDBRL"`
 }
 
+var errTimeout = errors.New("tempo de resposta do servidor excedido")
+
 func GetQuotation() (*QuotationRes, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	ctx, cancel := context.WithTimeoutCause(context.Background(), 4000*time.Millisecond, errTimeout)
 	defer cancel()
 
-	log.Printf("Iniciando chamada no endereço: %s", *config.GetQuotationAddress())
+	log.Printf("Chamada recebida no endereço: %s\n", *config.GetQuotationAddress())
 	req, err := http.NewRequestWithContext(ctx, "GET", *config.GetQuotationAddress(), nil)
 	if err != nil {
 		return nil, err
@@ -49,7 +52,7 @@ func GetQuotation() (*QuotationRes, error) {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Printf("Erro ao fazer a chamada: %v", err)
+		log.Print(err)
 		return nil, err
 	}
 	defer res.Body.Close()

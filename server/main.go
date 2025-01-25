@@ -16,8 +16,8 @@ import (
 var port = ":" + *config.GetPort()
 
 var (
-	ErrCallingExternalApi = errors.New("chamada falhou, tente novamente")
-	ErrUnmarshal          = errors.New("erro durante decodificação do JSON")
+	errCallingExternalApi = errors.New("chamada falhou, tente novamente")
+	errUnmarshal          = errors.New("erro durante decodificação do JSON")
 )
 
 func main() {
@@ -32,14 +32,13 @@ func main() {
 func quotationHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		// return
 	}
 
 	json, err := callExternalApi()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
 
 	w.Write(json)
@@ -48,19 +47,19 @@ func quotationHandler(w http.ResponseWriter, r *http.Request) {
 func callExternalApi() ([]byte, error) {
 	res, err := src.GetQuotation()
 	if err != nil {
-		return nil, ErrCallingExternalApi
+		return nil, errCallingExternalApi
 	}
 
 	q := &src.Quotation{Bid: res.USDBRL.Bid}
 
 	err = db.InsertQuotation(&src.Quotation{Bid: q.Bid})
 	if err != nil {
-		return nil, ErrCallingExternalApi
+		return nil, errCallingExternalApi
 	}
 
 	txt, err := json.Marshal(q)
 	if err != nil {
-		return nil, ErrUnmarshal
+		return nil, errUnmarshal
 	}
 
 	return txt, nil

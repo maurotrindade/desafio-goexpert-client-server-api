@@ -14,7 +14,7 @@ func CreateFile(value string) {
 	}
 	defer f.Close()
 
-	txt := "Dólar: " + value
+	txt := "Dólar: " + value + "\n"
 	size, e := f.WriteString(txt)
 	if e != nil {
 		panic(e)

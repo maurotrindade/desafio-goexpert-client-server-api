@@ -14,7 +14,7 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		}
-		if bid.Bid != "" {
+		if bid != nil {
 			src.CreateFile(bid.Bid)
 		}
 	}

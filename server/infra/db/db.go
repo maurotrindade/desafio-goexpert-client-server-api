@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 	"os"
 	"server/src"
@@ -40,8 +41,10 @@ func CreateDB() {
 	statement.Exec()
 }
 
+var errTimeout = errors.New("tempo para persistênica excedido")
+
 func InsertQuotation(quotation *src.Quotation) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancel := context.WithTimeoutCause(context.Background(), 30000*time.Millisecond, errTimeout)
 	defer cancel()
 
 	db, err := sql.Open("sqlite3", "./sqlite-database.db")
