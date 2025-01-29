@@ -31,7 +31,7 @@ type QuotationRes struct {
 var errTimeout = errors.New("tempo de resposta do servidor excedido")
 
 func GetQuotation() (*QuotationRes, error) {
-	ctx, cancel := context.WithTimeoutCause(context.Background(), 4000*time.Millisecond, errTimeout)
+	ctx, cancel := context.WithTimeoutCause(context.Background(), 200*time.Millisecond, errTimeout)
 	defer cancel()
 
 	log.Printf("Chamada recebida no endereço: %s\n", *config.GetQuotationAddress())

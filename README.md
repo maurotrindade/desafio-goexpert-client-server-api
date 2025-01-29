@@ -15,6 +15,12 @@ Subir containers:
 docker compose up
 ```
 
+Ver arquivo criado no client
+
+```bash
+ docker container exec <container_id> cat cotacao.txt
+```
+
 ## proposta
 
 Você precisará nos entregar dois sistemas em Go:
@@ -39,3 +45,11 @@ O client.go terá que salvar a cotação atual em um arquivo "cotacao.txt" no fo
 O endpoint necessário gerado pelo server.go para este desafio será: /cotacao e a porta a ser utilizada pelo servidor HTTP será a 8080.
 
 Ao finalizar, envie o link do repositório para correção.
+
+## resultado
+
+![Sucesso](./doc/success.PNG)
+
+![Timeout](./doc/fail.PNG)
+
+![Arquivo](./doc/file.PNG)
